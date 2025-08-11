@@ -1,16 +1,21 @@
 logLevel: warn
 
 server:
-  cors:
-    enabled: true
-    allowedOrigins:
-      - "*"
+  # Bind to Railway's port if present, else 4000
+  httpPort: ${PORT:-4000}
   httpHostV4: "0.0.0.0"
   httpHostV6: "[::]"
-  httpPort: 4000
 
 metrics:
   enabled: true
   hostV4: "0.0.0.0"
   hostV6: "[::]"
-  port: 4001
+  port: ${METRICS_PORT:-4001}
+
+projects:
+  - id: main
+    cors:
+      allowedOrigins:
+        - "*"
+      allowedMethods: [GET, POST, OPTIONS]
+      allowedHeaders: [Content-Type, Authorization]
