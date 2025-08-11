@@ -1,6 +1,10 @@
 logLevel: warn
 
 server:
+  cors:
+    enabled: true
+    allowedOrigins:
+      - "*"
   httpHostV4: "0.0.0.0"
   httpHostV6: "[::]"
   httpPort: 4000
