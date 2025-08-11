@@ -1,7 +1,6 @@
 logLevel: warn
 
 server:
-  # Bind to Railway's port if present, else 4000
   httpPort: ${PORT:-4000}
   httpHostV4: "0.0.0.0"
   httpHostV6: "[::]"
@@ -15,7 +14,38 @@ metrics:
 projects:
   - id: main
     cors:
-      allowedOrigins:
-        - "*"
+      allowedOrigins: ["*"]
       allowedMethods: [GET, POST, OPTIONS]
       allowedHeaders: [Content-Type, Authorization]
+
+    networks:
+      - architecture: evm
+        evm:
+          chainId: 8453
+        failsafe:
+          timeout:
+            duration: 15s
+          retry:
+            maxAttempts: 2 # equal to number of upstreams
+            delay: 300ms
+            backoffMaxDelay: 2s
+            backoffFactor: 0.3
+            jitter: 200ms
+          hedge:
+            delay: 800ms
+            maxCount: 1
+
+    upstreams:
+      - id: base-public-1
+        endpoint: "https://mainnet.base.org"
+        evm:
+          chainId: 8453
+          getLogsAutoSplittingRangeThreshold: 9999
+          getLogsSplitOnError: true
+
+      - id: base-public-2
+        endpoint: "https://base.llamarpc.com"
+        evm:
+          chainId: 8453
+          getLogsAutoSplittingRangeThreshold: 9999
+          getLogsSplitOnError: true
