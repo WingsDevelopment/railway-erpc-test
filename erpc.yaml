@@ -1,4 +1,4 @@
-logLevel: warn
+logLevel: debug
 
 server:
   httpPort: ${PORT:-4000}
@@ -23,19 +23,24 @@ projects:
         evm:
           chainId: 8453
         failsafe:
+          # Per-attempt timeout; with 3 attempts worst-case ~ 3 × 8s
           timeout:
-            duration: 15s
+            duration: 8s
           retry:
-            maxAttempts: 2 # equal to number of upstreams
+            # Try each upstream at most once (we have 3 upstreams)
+            maxAttempts: 3
             delay: 300ms
             backoffMaxDelay: 2s
             backoffFactor: 0.3
             jitter: 200ms
           hedge:
+            # If first attempt is slow, start one parallel attempt
             delay: 800ms
             maxCount: 1
+
     upstreams:
-      # Public fallbacks (simulate the “default” pool)
+      # Public Base upstreams (no keys). They can flap/rate-limit,
+      # but with retry+hedge you’ll see eRPC rotate between them.
       - id: base-public-1
         endpoint: "https://mainnet.base.org"
         evm:
@@ -52,6 +57,13 @@ projects:
 
       - id: base-public-3
         endpoint: "https://1rpc.io/base"
+        evm:
+          chainId: 8453
+          getLogsAutoSplittingRangeThreshold: 9900
+          getLogsSplitOnError: true
+
+      - id: base-public-4
+        endpoint: "https://base.llamarpc.com"
         evm:
           chainId: 8453
           getLogsAutoSplittingRangeThreshold: 9900
