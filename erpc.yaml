@@ -41,6 +41,13 @@ projects:
     upstreams:
       # Public Base upstreams (no keys). They can flap/rate-limit,
       # but with retry+hedge you’ll see eRPC rotate between them.
+      - id: base-public-0
+        endpoint: "https://api.zan.top/node/v1/base/mainnet/532eb96957bb4385bbad52a18d79592d"
+        evm:
+          chainId: 8453
+          getLogsAutoSplittingRangeThreshold: 9900
+          getLogsSplitOnError: true
+
       - id: base-public-1
         endpoint: "https://mainnet.base.org"
         evm:
