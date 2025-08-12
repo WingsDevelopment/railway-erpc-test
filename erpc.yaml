@@ -1,4 +1,4 @@
-logLevel: debug
+logLevel: warn
 
 server:
   httpPort: ${PORT:-4000}
@@ -23,55 +23,14 @@ projects:
         evm:
           chainId: 8453
         failsafe:
-          # Per-attempt timeout; with 3 attempts worst-case ~ 3 × 8s
           timeout:
-            duration: 8s
+            duration: 15s
           retry:
-            # Try each upstream at most once (we have 3 upstreams)
-            maxAttempts: 3
+            maxAttempts: 2
             delay: 300ms
             backoffMaxDelay: 2s
             backoffFactor: 0.3
             jitter: 200ms
           hedge:
-            # If first attempt is slow, start one parallel attempt
             delay: 800ms
             maxCount: 1
-
-    upstreams:
-      # Public Base upstreams (no keys). They can flap/rate-limit,
-      # but with retry+hedge you’ll see eRPC rotate between them.
-      - id: base-public-0
-        endpoint: "https://api.zan.top/node/v1/base/mainnet/532eb96957bb4385bbad52a18d79592d"
-        evm:
-          chainId: 8453
-          getLogsAutoSplittingRangeThreshold: 9900
-          getLogsSplitOnError: true
-
-      - id: base-public-1
-        endpoint: "https://mainnet.base.org"
-        evm:
-          chainId: 8453
-          getLogsAutoSplittingRangeThreshold: 9900
-          getLogsSplitOnError: true
-
-      - id: base-public-2
-        endpoint: "https://base.blockpi.network/v1/rpc/public"
-        evm:
-          chainId: 8453
-          getLogsAutoSplittingRangeThreshold: 9900
-          getLogsSplitOnError: true
-
-      - id: base-public-3
-        endpoint: "https://1rpc.io/base"
-        evm:
-          chainId: 8453
-          getLogsAutoSplittingRangeThreshold: 9900
-          getLogsSplitOnError: true
-
-      - id: base-public-4
-        endpoint: "https://base.llamarpc.com"
-        evm:
-          chainId: 8453
-          getLogsAutoSplittingRangeThreshold: 9900
-          getLogsSplitOnError: true
