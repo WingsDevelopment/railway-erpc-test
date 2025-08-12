@@ -34,3 +34,25 @@ projects:
           hedge:
             delay: 800ms
             maxCount: 1
+    upstreams:
+      # Public fallbacks (simulate the “default” pool)
+      - id: base-public-1
+        endpoint: "https://mainnet.base.org"
+        evm:
+          chainId: 8453
+          getLogsAutoSplittingRangeThreshold: 9900
+          getLogsSplitOnError: true
+
+      - id: base-public-2
+        endpoint: "https://base.blockpi.network/v1/rpc/public"
+        evm:
+          chainId: 8453
+          getLogsAutoSplittingRangeThreshold: 9900
+          getLogsSplitOnError: true
+
+      - id: base-public-3
+        endpoint: "https://1rpc.io/base"
+        evm:
+          chainId: 8453
+          getLogsAutoSplittingRangeThreshold: 9900
+          getLogsSplitOnError: true
